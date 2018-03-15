@@ -876,7 +876,7 @@ class crud{
 
             $this->acum +=0;
 
-            $iva=$this->acum*0.21;
+            $iva=$this->acum*0.20;
 
             $this->acum +=$iva;
 
@@ -897,12 +897,12 @@ class crud{
                                         
                                           <tr class='cart-subtotal'>
                                             <th>Portes(".$portesPeso."lb)<input type=\"hidden\" value=\"".$portesPeso."\" id=\"portesPeso\" /></th>
-                                            <td><span class='amount' id=\"portesDiv\">£ 0,00</span></td>
+                                            <td><span class='amount' id=\"portesDiv\">£ 0,00 </span></td>
                                         </tr>
 
                                         
                                         <tr class='cart-subtotal'>
-                                            <th>Tax(21%)</th>
+                                            <th>VAT(20%)</th>
                                             <td><span class='amount' id=\"ivaDiv\">£ ".$iva."</span></td>
                                         </tr>
 

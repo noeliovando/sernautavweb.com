@@ -38,12 +38,59 @@ $crud->borra();
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 
     <script src="../js/datos_vista.js"></script>
-    <!--<script src="../js/datos.js"></script>
-
-<script src="../js/datos2.js"></script>
-<script src="../js/datos3.js"></script>-->
+    <script src="../js/datos.js"></script>
+    <script src="../js/datos2.js"></script>
+    <script src="../js/datos3.js"></script>
     <script src="https://www.paypalobjects.com/api/checkout.js"></script>
 
+    <script>
+
+        function setPortes(ciudad){
+            var portesPeso = $("#portesPeso").val();
+            var portesPrecio = 0;
+
+            if(ciudad=='baleares'){
+                if(portesPeso<=1){
+                    portesPrecio=5.81;
+                }else if(portesPeso<=5){
+                    portesPrecio=7.95;
+                }else if(portesPeso<=10){
+                    portesPrecio=10.95;
+                }else if(portesPeso<=15){
+                    portesPrecio=11.95;
+                }else if(portesPeso>15){
+                    portesPeso = portesPeso-15;
+                    portesPrecio=11.95+(Math.ceil(portesPeso)*0.70);
+                }
+            }else if(ciudad == 'peninsula'){
+                if(portesPeso<=2){
+                    portesPrecio=0;
+                }else if(portesPeso>2){
+                    portesPeso = portesPeso-2;
+                    portesPrecio=5.12+(Math.ceil(portesPeso)*1.04);
+                }
+            }else if(ciudad == 'canarias'){
+                if(portesPeso<=1){
+                    portesPrecio=14.95;
+                }else if(portesPeso>1){
+                    portesPeso = portesPeso-1;
+                    portesPrecio=14.95+(Math.ceil(portesPeso)*6.85);
+                }
+            }
+
+
+            var subTotal = parseFloat($("#subTotalIn").val());
+            var iva = (subTotal+portesPrecio) * 0.21;
+            var total = (subTotal+portesPrecio+iva);
+            $("#ivaDiv").text("€" + (iva).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+            $("#portesDiv").text("€" + (portesPrecio).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+            $("#totalDiv").text("€" + (total).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
+            $("#monto").val(total);
+        }
+
+
+        $("#portesInit").change();
+    </script>
 </head>
 <body>
 
@@ -133,47 +180,44 @@ $crud->borra();
 
 
 <div class="single-product-area">
-    <div class="zigzag-bottom"></div>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4">
+<div class="zigzag-bottom"></div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
 
 
 
 
-                <div class="single-sidebar">
+            <div class="single-sidebar">
 
-                    <?php $crud->articulos5(); ?>
-                    </ul>
-                </div>
+                <?php $crud->articulos5(); ?>
+                </ul>
             </div>
+        </div>
 
-            <div class="col-md-8">
-                <div class="product-content-right">
-                    <div class="woocommerce">
+        <div class="col-md-8">
+            <div class="product-content-right">
+                <div class="woocommerce">
 
-                        <table cellspacing="0" class="shop_table cart">
-                            <thead>
-                            <tr>
-                                <th class="product-remove">items</th>
-                                <th class="product-thumbnail">&nbsp;</th>
-                                <th class="product-name">Product</th>
-                                <th class="product-price">Price</th>
+                    <table cellspacing="0" class="shop_table cart">
+                        <thead>
+                        <tr>
+                            <th class="product-remove">items</th>
+                            <th class="product-thumbnail">&nbsp;</th>
+                            <th class="product-name">Product</th>
+                            <th class="product-price">Price</th>
 
-                                <th class="product-subtotal">Total</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-
-
-
+                            <th class="product-subtotal">Total</th>
+                        </tr>
+                        </thead>
+                        <tbody>
 
 
 
-                            <?php $crud->carrito(); ?>
 
 
 
+                        <?php $crud->carrito(); ?>
 
 
 
@@ -181,160 +225,163 @@ $crud->borra();
 
 
 
-                            <tr>
-                                <td class="actions" colspan="6">
-                                    <div class="coupon">
 
+
+
+                        <tr>
+                            <td class="actions" colspan="6">
+                                <div class="coupon">
+
+                                </div>
+                                <!--<strong> ( Once made the payment by paypal it is necessary that you click on send purchase order to process your order ) </strong>-->
+                                <br><br>
+
+                                <form id='formulari' method='post' action="pago.php">
+
+                                    <div class='col-md-6'>
+                                        <input type='text' name='nombre' class='form-control'  placeholder='Enter your name ..'  />
                                     </div>
-                                    <!--<strong> ( Once made the payment by paypal it is necessary that you click on send purchase order to process your order ) </strong>-->
+
+
+
+                                    <div class='col-md-6'>
+                                        <input type='text' id="mapsearch" name='direccion'  size="50" class='form-control' placeholder="Address where the article will arrive..">
+                                    </div>
+
                                     <br><br>
 
-                                    <form id='formulari' method='post' action="pago.php">
-
-                                        <div class='col-md-6'>
-                                            <input type='text' name='nombre' class='form-control'  placeholder='Enter your name ..'  />
-                                        </div>
+                                    <div class='col-md-6'>
+                                        <input type='text' name='telefono' class='form-control'  placeholder='Enter your phone ..'  />
+                                    </div>
 
 
 
-                                        <div class='col-md-6'>
-                                            <input type='text' id="mapsearch" name='direccion'  size="50" class='form-control' placeholder="Address where the article will arrive..">
-                                        </div>
-
-                                        <br><br>
-
-                                        <div class='col-md-6'>
-                                            <input type='text' name='telefono' class='form-control'  placeholder='Enter your phone ..'  />
-                                        </div>
+                                    <div class='col-md-6'>
+                                        <input type='text' name='correo' class='form-control'  placeholder='Enter your email'  />
+                                    </div>
 
 
+                                    <div class='col-md-12'>
+                                        <input type='text' name='cupon' class='form-control'  placeholder='add coupon, optional'  div style=margin-top:1%;margin-bottom:1%; />
+                                    </div>
+                                    <div class='col-md-12'>
+                                        <select name='ciudad' class='form-control' onchange="setPortes(this.value)" id="portesInit" placeholder='Select shipping location'  style="margin-top:1%;margin-bottom:1%;" required >
+                                            <option value="" selected>select shipping location</option>
+                                            <option value="peninsular">Northumberland</option>
+                                            <option value="uk">Tyne y Wear</option>
+                                            <option value="uk">Durham</option>
+                                            <option value="uk">Cumbria</option>
+                                            <option value="uk">Lancashire</option>
+                                            <option value="uk">Yorkshire del Norte</option>
+                                            <option value="uk">Yorkshire del Este</option>
+                                            <option value="uk">Yorkshire del Sur</option>
+                                            <option value="ukr">Yorkshire del Oeste</option>
+                                            <option value="uk">Gran Manchester</option>
+                                            <option value="uk">Merseyside</option>
+                                            <option value="uk">Cheshire</option>
+                                            <option value="uk">Derbyshire</option>
+                                            <option value="uk">Nottinghamshire</option>
+                                            <option value="uk">Lincolnshire</option>
+                                            <option value="uk">Rutland</option>
+                                            <option value="uk">Leicestershire</option>
+                                            <option value="uk">Staffordshire</option>
+                                            <option value="uk">Shropshire</option>
+                                            <option value="uk">Herefordshire</option>
+                                            <option value="uk">Worcestershire</option>
+                                            <option value="uk">West Midlands</option>
+                                            <option value="uk">Warwickshire</option>
+                                            <option value="uk">Northamptonshire</option>
+                                            <option value="uk">Cambridgeshire</option>
+                                            <option value="uk">Norfolk</option>
+                                            <option value="uk">Suffolk</option>
+                                            <option value="uk">Essex</option>
+                                            <option value="uk">Hertfordshire</option>
+                                            <option value="uk">Bedfordshire</option>
+                                            <option value="uk">Buckinghamshire</option>
+                                            <option value="uk">Oxfordshire</option>
+                                            <option value="uk">Gloucestershire</option>
+                                            <option value="uk">Bristol</option>
+                                            <option value="uk">Somerset</option>
+                                            <option value="uk">Wiltshire</option>
+                                            <option value="uk">Berkshire</option>
+                                            <option value="uk">London</option>
+                                            <option value="uk">Kent</option>
+                                            <option value="uk">Sussex del Este</option>
+                                            <option value="uk">Sussex del Oeste</option>
+                                            <option value="uk">Surrey</option>
+                                            <option value="uk">Hampshire</option>
+                                            <option value="uk">Isla de Wight</option>
+                                            <option value="uk">Dorset</option>
+                                            <option value="uk">Devon</option>
+                                            <option value="uk">Cornwall</option>
 
-                                        <div class='col-md-6'>
-                                            <input type='text' name='correo' class='form-control'  placeholder='Enter your email'  />
-                                        </div>
+                                        </select>
 
+                                    </div>
+                                    <div class="cart_totals ">
+                                        <h2>shopping cart</h2>
 
-                                        <div class='col-md-12'>
-                                            <input type='text' name='cupon' class='form-control'  placeholder='add coupon, optional'  div style=margin-top:1%;margin-bottom:1%; />
-                                        </div>
-                                        <div class='col-md-12'>
-    <select name='ciudad' class='form-control' onchange="setPortes(this.value)" id="portesInit" placeholder='Select shipping location'  style="margin-top:1%;margin-bottom:1%;" required >
-        <option value="" selected>select shipping location</option>
-        <option value="peninsular">Northumberland</option>
-        <option value="uk">Tyne y Wear</option>
-        <option value="uk">Durham</option>
-        <option value="uk">Cumbria</option>
-        <option value="uk">Lancashire</option>
-        <option value="uk">Yorkshire del Norte</option>
-        <option value="uk">Yorkshire del Este</option>
-        <option value="uk">Yorkshire del Sur</option>
-        <option value="ukr">Yorkshire del Oeste</option>
-        <option value="uk">Gran Manchester</option>
-        <option value="uk">Merseyside</option>
-        <option value="uk">Cheshire</option>
-        <option value="uk">Derbyshire</option>
-        <option value="uk">Nottinghamshire</option>
-        <option value="uk">Lincolnshire</option>
-        <option value="uk">Rutland</option>
-        <option value="uk">Leicestershire</option>
-        <option value="uk">Staffordshire</option>
-        <option value="uk">Shropshire</option>
-        <option value="uk">Herefordshire</option>
-        <option value="uk">Worcestershire</option>
-        <option value="uk">West Midlands</option>
-        <option value="uk">Warwickshire</option>
-        <option value="uk">Northamptonshire</option>
-        <option value="uk">Cambridgeshire</option>
-        <option value="uk">Norfolk</option>
-        <option value="uk">Suffolk</option>
-        <option value="uk">Essex</option>
-        <option value="uk">Hertfordshire</option>
-        <option value="uk">Bedfordshire</option>
-        <option value="uk">Buckinghamshire</option>
-        <option value="uk">Oxfordshire</option>
-        <option value="uk">Gloucestershire</option>
-        <option value="uk">Bristol</option>
-        <option value="uk">Somerset</option>
-        <option value="uk">Wiltshire</option>
-        <option value="uk">Berkshire</option>
-        <option value="uk">London</option>
-        <option value="uk">Kent</option>
-        <option value="uk">Sussex del Este</option>
-        <option value="uk">Sussex del Oeste</option>
-        <option value="uk">Surrey</option>
-        <option value="uk">Hampshire</option>
-        <option value="uk">Isla de Wight</option>
-        <option value="uk">Dorset</option>
-        <option value="uk">Devon</option>
-        <option value="uk">Cornwall</option>
+                                        <?php $crud->carrotabla(); ?>
+                                    </div>
+                                    <br><br>
+                                    <input type="hidden" name="monto" id="monto" value="0">
+                                    <input type="submit" value="Buy" id="btn-ingresa" class='btn btn-info'>
 
-    </select>
-        
-    </div>
-                                        <div class="cart_totals ">
-                                            <h2>shopping cart</h2>
-
-                                            <?php $crud->carrotabla(); ?>
-                                        </div>
-                                        <br><br>
-                                        <input type="hidden" name="monto" id="monto" value="0">
-                                        <input type="submit" value="Buy" id="btn-ingresa" class='btn btn-info'>
-
-                                    </form>
+                                </form>
 
 
 
 
 
-                                    <div id='res' ></div>
+                                <div id='res' ></div>
 
 
 
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
 
 
 
-                        <div class="cart-collaterals">
+                    <div class="cart-collaterals">
 
 
-                            <div class="cross-sells">
-
-                            </div>
-
-
-
-
-
-
-                            <form method="post" action="#" class="shipping_calculator">
-                                <h2><a class="shipping-calculator-button" data-toggle="collapse" href="#calcalute-shipping-wrap" aria-expanded="false" aria-controls="calcalute-shipping-wrap"></a></h2>
-
-                                <section id="calcalute-shipping-wrap" class="shipping-calculator-form collapse">
-
-
-
-
-
-                                    <p class="form-row form-row-wide"><input type="text" id="calc_shipping_state" name="calc_shipping_state" placeholder="State / county" value="" class="input-text"> </p>
-
-                                    <p class="form-row form-row-wide"><input type="text" id="calc_shipping_postcode" name="calc_shipping_postcode" placeholder="Postcode / Zip" value="" class="input-text"></p>
-
-
-                                    <p><button class="button" value="1" name="calc_shipping" type="submit">Update Totals</button></p>
-
-                                </section>
-                            </form>
-
+                        <div class="cross-sells">
 
                         </div>
+
+
+
+
+
+
+                        <form method="post" action="#" class="shipping_calculator">
+                            <h2><a class="shipping-calculator-button" data-toggle="collapse" href="#calcalute-shipping-wrap" aria-expanded="false" aria-controls="calcalute-shipping-wrap"></a></h2>
+
+                            <section id="calcalute-shipping-wrap" class="shipping-calculator-form collapse">
+
+
+
+
+
+                                <p class="form-row form-row-wide"><input type="text" id="calc_shipping_state" name="calc_shipping_state" placeholder="State / county" value="" class="input-text"> </p>
+
+                                <p class="form-row form-row-wide"><input type="text" id="calc_shipping_postcode" name="calc_shipping_postcode" placeholder="Postcode / Zip" value="" class="input-text"></p>
+
+
+                                <p><button class="button" value="1" name="calc_shipping" type="submit">Update Totals</button></p>
+
+                            </section>
+                        </form>
+
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 
@@ -418,51 +465,7 @@ $crud->borra();
 <!-- Latest jQuery form server -->
 
 
-<script >
 
-function setPortes(ciudad){
-    var portesPeso = $("#portesPeso").val();
-    var portesPrecio = 0; 
-
-    if(ciudad=='baleares'){
-        if(portesPeso<=1){
-            portesPrecio=5.81;
-        }else if(portesPeso<=5){
-            portesPrecio=7.95;
-        }else if(portesPeso<=10){
-            portesPrecio=10.95;
-        }else if(portesPeso<=15){
-            portesPrecio=11.95; 
-        }else if(portesPeso>15){
-            portesPeso = portesPeso-15;
-            portesPrecio=11.95+(Math.ceil(portesPeso)*0.70);
-        }
-    }else if(ciudad == 'peninsular'){
-        if(portesPeso<=1){
-            portesPrecio=5;
-        }else if(portesPeso>2){
-            portesPeso = portesPeso-2;
-            portesPrecio=5.12+(Math.ceil(portesPeso)*1.04);
-        }
-    }else if(ciudad == 'canarias'){
-        if(portesPeso<=1){
-            portesPrecio=14.95;
-        }else if(portesPeso>1){
-            portesPeso = portesPeso-1;
-            portesPrecio=14.95+(Math.ceil(portesPeso)*6.85);
-        }
-    }
-    var subTotal = parseFloat($("#subTotalIn").val());
-    var iva = (subTotal+portesPrecio) * 0.21;
-    var total = (subTotal+portesPrecio+iva);
-    $("#ivaDiv").text("€" + (iva).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
-    $("#portesDiv").text("€" + (portesPrecio).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
-    $("#totalDiv").text("€" + (total).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,'));
-    $("#monto").val(total
-
-
-$("#portesInit").change();
-</script>
 
 
 
